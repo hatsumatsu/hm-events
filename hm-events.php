@@ -82,6 +82,7 @@ function hm_events_admin_css() {
     wp_enqueue_style( 'hm-events_jqueryui' );
 } 
 
+
 /**
  * Register admin JS
  *
@@ -109,6 +110,7 @@ function hm_events_add_metabox() {
 }
 
 add_action( 'admin_menu', 'hm_events_add_metabox' );
+
 
 /**
  * Render metabox no events edit page.
@@ -413,7 +415,7 @@ function hm_events_rewrite_rules() {
     /* by month paged */
     add_rewrite_rule(
         'events/([0-9]{4})/([0-9]{1,2})/page/([0-9]+)/?$',
-        'index.php?post_type=events&event_year=$matches[1]&&event_month=$matches[2]&paged=$matches[3]',
+        'index.php?post_type=events&event_year=$matches[1]&event_month=$matches[2]&paged=$matches[3]',
         'top'
     );
 
@@ -465,7 +467,7 @@ add_filter( 'query_vars', 'hm_events_register_query_vars' );
 
 
 /**
- * Template tag: display event date based on WP's global date & time format
+ * Template tag: Display event date based on WP's global date & time format
  *
  * @param   string  $date_format    PHP date format. default is WP's global date/time format.
  */
@@ -475,8 +477,9 @@ function the_event_date( $date_format = '' ) {
     echo $event_date;
 }
 
+
 /**
- * Template tag: get event date based on WP's global date & time format
+ * Template tag: Get event date based on WP's global date & time format
  *
  * @param   string  $date_format    PHP date format. default is WP's global date/time format.
  * @return  string  $date_format
