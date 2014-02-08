@@ -1,0 +1,31 @@
+﻿div.hidden {
+  display: none;
+}
+input.hme_timestamp {
+  font-size: 140% !important;
+}
+.cdt label {
+  display: block;
+}
+
+/* auto suggest */
+.ac_results li .divider {
+    display: none;
+}
+
+.ac_results li .title, 
+.ac_results li .address {
+    display: block;
+}
+
+.ac_results li .title {
+    font-weight: bold;
+}
+
+.ac_results li .address {
+    font-size: 80%;
+}
+
+.ac_results li .id {
+    display: none;
+}
