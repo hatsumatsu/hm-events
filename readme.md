@@ -8,7 +8,7 @@ It creates the post type `events` and adds a metabox with a date/time picker to 
 + Localization: date/time format based on global settings set in `Admin > Settings > General`
 + Pretty permalinks for event archive pages: 
     * Upcoming events: `http://example.com/events/{year*}/{month*}/{day*}/page*/{page*}` 
-    * Passed events: `http://example.com/events/passed/page*/{page*}`
+    * Passed events: `http://example.com/events/passed/{year*}/{month*}/{day*}/page*/{page*}`
 
 \* optional
 
@@ -16,3 +16,4 @@ It creates the post type `events` and adds a metabox with a date/time picker to 
 
 + `<?php the_event_date( $date_format ); ?>`
 + `<?php get_event_date( $date_format ); ?>`
++ `<?php get_event_archive_nav(); ?>`
