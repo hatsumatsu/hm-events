@@ -258,6 +258,24 @@ add_action( 'pre_get_posts', 'hm_events_sortby_admin_col' );
 
 
 /**
+ * Register query vars.
+ *
+ * @param   array   $vars    query vars
+ * @return  array   $vars
+ */
+function hm_events_add_query_vars( $vars ){
+  $vars[] = 'passed';
+  $vars[] = 'event_year';
+  $vars[] = 'event_month';
+  $vars[] = 'event_day';
+
+  return $vars;
+}
+
+add_filter( 'query_vars', 'hm_events_add_query_vars' );
+
+
+/**
  * Modify query for event archive pages.
  * Upcoming events / passed events / year, months and day archives.
  *
@@ -391,6 +409,48 @@ function hm_events_rewrite_rules() {
         'top'
     );
 
+    /* passed events by year */
+    add_rewrite_rule(
+        'events/passed/([0-9]{4})/?$',
+        'index.php?post_type=events&passed=passed&event_year=$matches[1]',
+        'top'
+    );
+
+    /* passed events by year paged */
+    add_rewrite_rule(
+        'events/passed/([0-9]{4})/page/([0-9]+)/?$',
+        'index.php?post_type=events&passed=passed&event_year=$matches[1]&paged=$matches[2]',
+        'top'
+    );
+
+    /* passed events by month */
+    add_rewrite_rule(
+        'events/passed/([0-9]{4})/([0-9]{1,2})/?$',
+        'index.php?post_type=events&passed=passed&event_year=$matches[1]&event_month=$matches[2]',
+        'top'
+    );
+
+    /* passed events by month paged */
+    add_rewrite_rule(
+        'events/passed/([0-9]{4})/([0-9]{1,2})/page/([0-9]+)/?$',
+        'index.php?post_type=events&passed=passed&event_year=$matches[1]&event_month=$matches[2]&paged=$matches[3]',
+        'top'
+    );
+
+    /* passed events by day */
+    add_rewrite_rule(
+        'events/passed/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/?$',
+        'index.php?post_type=events&passed=passed&event_year=$matches[1]&event_month=$matches[2]&event_day=$matches[3]',
+        'top'
+    );
+
+    /* passed events by day paged */
+    add_rewrite_rule(
+        'events/passed/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/page/([0-9]+)/?$',
+        'index.php?post_type=events&passed=passed&event_year=$matches[1]&event_month=$matches[2]&event_day=$matches[3]&paged=$mathes[4]',
+        'top'
+    );
+
     /* by year */
     add_rewrite_rule(
         'events/([0-9]{4})/?$',
@@ -494,6 +554,37 @@ function get_event_date( $date_format = '' ) {
     $event_date = date( $date_format, get_post_meta( $post->ID, 'hm-events_date', true) );
 
     return $event_date;
+}
+
+/**
+ * Template tag: Display event archive nav basd on event years
+ *
+ */
+function get_event_archive_nav() {
+    global $wpdb,
+           $wp_query;
+
+    $years = $wpdb->get_col( "SELECT YEAR( FROM_UNIXTIME( meta_value ) ) FROM $wpdb->postmeta WHERE meta_key = 'hm-events_date' ORDER BY meta_value DESC" );
+    $years = array_unique( $years, SORT_REGULAR );
+
+    if( $years ) {
+        $baseURL = get_bloginfo( 'url' );
+        $current = ( get_query_var( 'event_year' ) ) ? get_query_var( 'event_year' ) : 0;
+
+        echo '<nav class="hm-events hm-events-archive-nav">';
+
+        foreach( $years as $year ) {
+            $current_class = ( $current == $year ) ? ' class="current"' : '';
+
+            echo '<li' . $current_class . '>';
+            echo '<a href="' . $baseURL . '/events/passed/' . $year . '/">';
+            echo $year;
+            echo '</a>';
+            echo '</li>';
+        }
+
+        echo '</nav>';
+    }
 }
 
 require_once( 'option-page.php' );

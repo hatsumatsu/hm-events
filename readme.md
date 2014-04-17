@@ -1,7 +1,7 @@
 #HM Events
 ## Wordpress plugin for simple event management
 
-*HM Events* enables simple management of single date events within Wordpress. 
+**HM Events** enables simple management of single date events within Wordpress. 
 It creates the post type `events` and adds a metabox with a date/time picker to the edit screen.
 
 ### Features
