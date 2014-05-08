@@ -572,17 +572,19 @@ function get_event_archive_nav() {
         $current = ( get_query_var( 'event_year' ) ) ? get_query_var( 'event_year' ) : 0;
 
         echo '<nav class="hm-events hm-events-archive-nav">';
+        echo '<ul>';
 
         foreach( $years as $year ) {
             $current_class = ( $current == $year ) ? ' class="current"' : '';
 
             echo '<li' . $current_class . '>';
-            echo '<a href="' . $baseURL . '/events/passed/' . $year . '/">';
+            echo '<a href="' . $baseURL . '/events/' . $year . '/">';
             echo $year;
             echo '</a>';
             echo '</li>';
         }
 
+        echo '</ul>';
         echo '</nav>';
     }
 }
