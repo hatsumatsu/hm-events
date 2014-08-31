@@ -52,7 +52,7 @@ function hm_events_register_data_structure() {
                 'edit_item' => __( 'Edit Event', 'hm-events' ),
                 'new_item' => __( 'Add Event', 'hm-events' ),
                 'view_item' => __( 'View Event', 'hm-events' ),
-                'search_items' => __( 'Search Event', 'hm-events' )
+                'search_items' => __( 'Search Events', 'hm-events' )
             ),
             'capability_type' => 'post',
             'supports' => array( 'title', 'editor', 'author', 'thumbnail' ),
@@ -287,7 +287,7 @@ function hm_events_modify_query( $query ) {
 
     $today = mktime ( null, null, null, date( 'm' ), date( 'd' ), date( 'y' ) );
 
-    if( $query->query_vars[ 'post_type' ] == 'events' || isset( $query->query_vars[ $hm_events_options['events_per_page'] ] ) ) {
+    if( $query->query_vars[ 'post_type' ] == 'events' && is_archive() ) {
         
         $query->query_vars[ 'posts_per_page' ] = $hm_events_options['events_per_page'];
 
