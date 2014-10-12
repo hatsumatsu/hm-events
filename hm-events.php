@@ -289,33 +289,29 @@ function hm_events_modify_query( $query ) {
 
     if( $query->query_vars[ 'post_type' ] == 'events' && is_archive() ) {
         
-        $query->query_vars[ 'posts_per_page' ] = $hm_events_options['events_per_page'];
+        // $query->query_vars[ 'posts_per_page' ] = $hm_events_options['events_per_page'];
 
-        /* only show upcoming events */
+        // default: show upcoming events
         $query->query_vars[ 'meta_key' ] = 'hm-events_date';
 
         $query->query_vars[ 'meta_value' ] = $today;
         $query->query_vars[ 'orderby' ] = 'meta_value';
+        $query->query_vars[ 'meta_compare' ] = '>=';
+        $query->query_vars[ 'order' ] = 'ASC';
 
-        /* passed events */
+        // passed events
         if( $query->query_vars[ 'passed' ] ) {
-
             $query->query_vars[ 'meta_compare' ] = '<';
             $query->query_vars[ 'order' ] = 'DESC';
+        } 
 
-        } else {
-
-            $query->query_vars[ 'meta_compare' ] = '>=';
-            $query->query_vars[ 'order' ] = 'ASC';
-
-        }
-
-        /* by event year */
+        // by year
         if( $query->query_vars[ 'event_year' ] ) {
 
             $year = $query->query_vars[ 'event_year' ];
 
             // reset meta query
+            $query->query_vars[ 'meta_key' ] = null;
             $query->query_vars[ 'meta_value' ] = null;
             $query->query_vars[ 'meta_compare' ] = null;
 
@@ -328,7 +324,7 @@ function hm_events_modify_query( $query ) {
                 )
             );
 
-            /* by year + month */
+            // by year + month
             if( $query->query_vars[ 'event_month' ] ) {
 
                 $month = $query->query_vars[ 'event_month' ];
@@ -342,7 +338,7 @@ function hm_events_modify_query( $query ) {
                     )
                 );
 
-                /* by year + month + day */
+                // by year + month + day
                 if( $query->query_vars[ 'event_day' ] ) {
 
                     $day = $query->query_vars[ 'event_day' ];
@@ -364,14 +360,12 @@ function hm_events_modify_query( $query ) {
 
     }
 
-    /* show all events on search results */
-    if( is_search() && $query->query_vars[ 'post_type' ] == 'events' ) {
-
-        $query->query_vars[ 'posts_per_page' ] = -1;
+    // show all events on search results
+    if( is_search() && $query->query_vars[ 'post_type' ] == 'events' && $query->is_main_query() ) {
 
         $query->query_vars[ 'meta_key' ] = 'hm-events_date';
-        $query->query_vars[ 'meta_value' ] = 0;
-        $query->query_vars[ 'meta_compare' ] = '>';
+        // $query->query_vars[ 'meta_value' ] = null;
+        // $query->query_vars[ 'meta_compare' ] = null;
 
         $query->query_vars[ 'orderby' ] = 'meta_value';
         $query->query_vars[ 'order' ] = 'DESC';
@@ -395,108 +389,59 @@ if( !is_admin() ) {
 function hm_events_rewrite_rules() {
     global $hm_events_options;
 
-    /* passed events */
-    add_rewrite_rule(
-        'events/passed/?$',
-        'index.php?post_type=events&passed=passed',
-        'top'
-    );
-
-    /* passed events paged */
-    add_rewrite_rule(
-        'events/passed/page/([0-9]+)/?$',
-        'index.php?post_type=events&passed=passed&paged=$matches[1]',
-        'top'
-    );
-
-    /* passed events by year */
-    add_rewrite_rule(
-        'events/passed/([0-9]{4})/?$',
-        'index.php?post_type=events&passed=passed&event_year=$matches[1]',
-        'top'
-    );
-
-    /* passed events by year paged */
-    add_rewrite_rule(
-        'events/passed/([0-9]{4})/page/([0-9]+)/?$',
-        'index.php?post_type=events&passed=passed&event_year=$matches[1]&paged=$matches[2]',
-        'top'
-    );
-
-    /* passed events by month */
-    add_rewrite_rule(
-        'events/passed/([0-9]{4})/([0-9]{1,2})/?$',
-        'index.php?post_type=events&passed=passed&event_year=$matches[1]&event_month=$matches[2]',
-        'top'
-    );
-
-    /* passed events by month paged */
-    add_rewrite_rule(
-        'events/passed/([0-9]{4})/([0-9]{1,2})/page/([0-9]+)/?$',
-        'index.php?post_type=events&passed=passed&event_year=$matches[1]&event_month=$matches[2]&paged=$matches[3]',
-        'top'
-    );
-
-    /* passed events by day */
-    add_rewrite_rule(
-        'events/passed/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/?$',
-        'index.php?post_type=events&passed=passed&event_year=$matches[1]&event_month=$matches[2]&event_day=$matches[3]',
-        'top'
-    );
-
-    /* passed events by day paged */
-    add_rewrite_rule(
-        'events/passed/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/page/([0-9]+)/?$',
-        'index.php?post_type=events&passed=passed&event_year=$matches[1]&event_month=$matches[2]&event_day=$matches[3]&paged=$mathes[4]',
-        'top'
-    );
-
-    /* by year */
+    // by year 
     add_rewrite_rule(
         'events/([0-9]{4})/?$',
         'index.php?post_type=events&event_year=$matches[1]',
         'top'
     );
 
-    /* by year paged */
+    // by year paged
     add_rewrite_rule(
         'events/([0-9]{4})/page/([0-9]+)/?$',
         'index.php?post_type=events&event_year=$matches[1]&paged=$matches[2]',
         'top'
     );
 
-    /* by month */
+    // by month
     add_rewrite_rule(
         'events/([0-9]{4})/([0-9]{1,2})/?$',
         'index.php?post_type=events&event_year=$matches[1]&event_month=$matches[2]',
         'top'
     );
 
-    /* by month paged */
+    // by month paged
     add_rewrite_rule(
         'events/([0-9]{4})/([0-9]{1,2})/page/([0-9]+)/?$',
         'index.php?post_type=events&event_year=$matches[1]&event_month=$matches[2]&paged=$matches[3]',
         'top'
     );
 
-    /* by day */
+    // by day 
     add_rewrite_rule(
         'events/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/?$',
         'index.php?post_type=events&event_year=$matches[1]&event_month=$matches[2]&event_day=$matches[3]',
         'top'
     );
 
-    /* by day paged */
+    // by day paged
     add_rewrite_rule(
         'events/([0-9]{4})/([0-9]{1,2})/([0-9]{1,2})/page/([0-9]+)/?$',
         'index.php?post_type=events&event_year=$matches[1]&event_month=$matches[2]&event_day=$matches[3]&paged=$mathes[4]',
         'top'
     );
 
-    /* event type + passed events */
+    // passed events
     add_rewrite_rule(
-        $hm_events_options['event_types_slug'] . '/([a-zA-z_-]+)/passed/?$',
-        'index.php?' . $hm_events_options['event_types_slug'] . '=$matches[1]&passed=passed',
+        'events/passed/?$',
+        'index.php?post_type=events&passed=passed',
+        'top'
+    );
+
+    // passed events paged
+    add_rewrite_rule(
+        'events/passed/page/([0-9]+)/?$',
+        'index.php?post_type=events&passed=passed&paged=$matches[1]',
         'top'
     );
 
