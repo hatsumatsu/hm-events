@@ -123,9 +123,6 @@ function hm_events_show_box() {
     // Use nonce for verification
     echo '<input type="hidden" name="hm-events_nonce" value="', wp_create_nonce( basename( __FILE__ ) ), '" />';
 
-    echo '<table class="form-table hm-events">';
-    echo '<tr><td>';
-
     // get current post meta data
     $timestamp = get_post_meta( $post->ID, 'hm-events_date', true );
     $date = ( $timestamp ) ? date( get_option( 'date_format' ) . ' ' . get_option( 'time_format' ), $timestamp ) : '';
@@ -137,11 +134,7 @@ function hm_events_show_box() {
     echo '<input class="" type="hidden" name="hm-events_dateformat" id="hm-events_dateformat" value="' . get_option( 'date_format' ) . '" accept="" />';
     echo '<input class="" type="hidden" name="hm-events_timeformat" id="hm-events_timeformat" value="' . get_option( 'time_format' ) . '" accept="" />';
     echo '<input class="" type="hidden" name="" id="" value="' . $timestamp . '" accept="" />';
-
     echo '</p>';
-
-    echo '</td></tr>';
-    echo '</table>';
 }
 
 
