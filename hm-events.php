@@ -8,12 +8,6 @@ Author: HATSUMATSU
 Author URI: http://hatsumatsu.de/
 */
 
-/**
- * Configuration
- *
- */
-$hm_events_options = get_option( 'hm_events_options' );
-
 
 /**
  * I11n
@@ -27,10 +21,9 @@ load_plugin_textdomain( 'hm-events', '/wp-content/plugins/hm-events/' );
  *
  */
 function hm_events_register_data_structure() {
-    global $hm_events_options;
 
     register_taxonomy( 
-        $hm_events_options['event_types_slug'], 
+        'event_types', 
         array( 'events' ), 
         array( 
             'hierarchical' => true,
@@ -59,9 +52,11 @@ function hm_events_register_data_structure() {
             'public' => true,
             'menu_position' => 5,
             'menu_icon' => 'dashicons-calendar',
-            'taxonomies' => array( $hm_events_options['event_types_slug'] ),
-            'rewrite' => array( 'slug' => 'events' ),
-            'has_archive' => 'events' 
+            'taxonomies' => array( 'event_types' ),
+            'rewrite' => array( 
+                'slug' => 'events/filter',
+                'with_front' => false 
+            )
         )
     );
 
@@ -283,14 +278,11 @@ add_filter( 'query_vars', 'hm_events_add_query_vars' );
  * @return  object   $query
  */
 function hm_events_modify_query( $query ) {
-    global $hm_events_options;
 
     $today = mktime ( null, null, null, date( 'm' ), date( 'd' ), date( 'y' ) );
 
     if( $query->query_vars[ 'post_type' ] == 'events' && is_archive() ) {
         
-        // $query->query_vars[ 'posts_per_page' ] = $hm_events_options['events_per_page'];
-
         // default: show upcoming events
         $query->query_vars[ 'meta_key' ] = 'hm-events_date';
 
@@ -387,7 +379,6 @@ if( !is_admin() ) {
  *
  */
 function hm_events_rewrite_rules() {
-    global $hm_events_options;
 
     // by year 
     add_rewrite_rule(
@@ -533,5 +524,3 @@ function get_event_archive_nav() {
         echo '</nav>';
     }
 }
-
-require_once( 'option-page.php' );
