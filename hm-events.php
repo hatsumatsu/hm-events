@@ -48,7 +48,13 @@ function hm_events_register_data_structure() {
                 'search_items' => __( 'Search Events', 'hm-events' )
             ),
             'capability_type' => 'post',
-            'supports' => array( 'title', 'editor', 'author', 'thumbnail' ),
+            'supports' => array( 
+                'title', 
+                'editor',
+                'excerpt', 
+                'author', 
+                'thumbnail' 
+                ),
             'public' => true,
             'menu_position' => 5,
             'menu_icon' => 'dashicons-calendar',
