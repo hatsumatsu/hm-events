@@ -31,8 +31,12 @@ function hm_events_register_data_structure() {
                 'name' => __( 'Event Types', 'hm-events' ), 
                 'singular_name' => __( 'Event Type', 'hm-events' )
             ),
-            'show_ui' => true 
-        ) 
+            'show_ui' => true,
+            'rewrite' => array( 
+                'slug' => 'events/filter',
+                'with_front' => false 
+            ) 
+        )
     );
 
     register_post_type( 
@@ -60,9 +64,10 @@ function hm_events_register_data_structure() {
             'menu_icon' => 'dashicons-calendar',
             'taxonomies' => array( 'event_types' ),
             'rewrite' => array( 
-                'slug' => 'events/filter',
+                'slug' => 'events',
                 'with_front' => false 
-            )
+            ),
+            'has_archive' => 'events'
         )
     );
 
@@ -353,14 +358,9 @@ function hm_events_modify_query( $query ) {
 
     // show all events on search results
     if( is_search() && $query->query_vars[ 'post_type' ] == 'events' && $query->is_main_query() ) {
-
         $query->query_vars[ 'meta_key' ] = 'hm-events_date';
-        // $query->query_vars[ 'meta_value' ] = null;
-        // $query->query_vars[ 'meta_compare' ] = null;
-
         $query->query_vars[ 'orderby' ] = 'meta_value';
         $query->query_vars[ 'order' ] = 'DESC';
-
     }
 
     return $query;
